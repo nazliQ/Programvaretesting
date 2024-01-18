@@ -19,7 +19,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnhetstestBankController {
@@ -202,7 +201,6 @@ public class EnhetstestBankController {
     @Test
     public void registrerBetaling_ikkeLoggetInn(){
         //Arrange
-        String personnummer = "12345678901";
         Transaksjon betaling = new Transaksjon();
         betaling.setBelop(1000);
         betaling.setAvventer("OK");
@@ -217,7 +215,7 @@ public class EnhetstestBankController {
         String resultat = bankController.registrerBetaling(betaling);
 
         //Assert
-        assertEquals(null,resultat);
+        assertNull(resultat);
 
     }
 
