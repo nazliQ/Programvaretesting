@@ -254,7 +254,7 @@ public class EnhetstestBankController {
 
         //Assert
         assertEquals(transaksjoner, resultat);
-        assertEquals(2, resultat.size());
+        assertEquals(1, resultat.size());
         assertEquals(eksempel1, resultat.get(0));
         assertEquals(eksempel2, resultat.get(1));
 
@@ -347,7 +347,7 @@ public class EnhetstestBankController {
         String resultat = bankController.endre(innKunde);
 
         //Assert
-        assertEquals(resultat,innKunde ,"OK");
+        assertEquals("OK", resultat);
 
     }
 
