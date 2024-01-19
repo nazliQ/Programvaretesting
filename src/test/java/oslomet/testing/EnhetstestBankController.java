@@ -16,8 +16,7 @@ import oslomet.testing.Sikkerhet.Sikkerhet;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -274,15 +273,61 @@ public class EnhetstestBankController {
 
 
     @Test
-    public void utforBetaling(){
-        //Arrange
+    public void utforBetaling_loggetInnSuksess(){
+        String personnummer = "12345678901";
+        int txID = 1;
+        List<Transaksjon> eksempel1transaksjon = new ArrayList<>();
+        eksempel1transaksjon.add(new Transaksjon()); // Sett opp eksempeltransaksjoner
 
+        //Eksempel object for 1 transaksjon
+        Transaksjon eksempel1 = new Transaksjon();
+        eksempel1.setDato("2024-12-01");
+        eksempel1.setKontonummer("109679902");
+        eksempel1.setMelding("Her skal det være en melding");
+        eksempel1.setFraTilKontonummer("mfefef");
+        eksempel1.setTxID(1);
+        eksempel1.setBelop(1000.0);
+        eksempel1.setAvventer("1");
 
-        //Act
+        eksempel1transaksjon.add(eksempel1);
 
+        Mockito.when(sjekk.loggetInn()).thenReturn(personnummer);
+        Mockito.when(repository.utforBetaling(txID)).thenReturn("OK");
+        Mockito.when(repository.hentBetalinger(personnummer)).thenReturn(eksempel1transaksjon);
 
-        //Assert
+        // Act
+        List<Transaksjon> resultat = bankController.utforBetaling(txID);
 
+        // Assert
+        assertNotNull(resultat);
+        assertEquals(eksempel1transaksjon, resultat);
+
+    }
+    @Test
+    public void utforBetaling_loggetInnSuksessNei(){
+        String personnummer = "12345678901";
+        int txID = 1;
+
+        Mockito.when(sjekk.loggetInn()).thenReturn(personnummer);
+        Mockito.when(repository.utforBetaling(txID)).thenReturn("Feil");
+
+        // Act
+        List<Transaksjon> resultat = bankController.utforBetaling(txID);
+
+        // Assert
+        assertNull(resultat);
+    }
+
+    @Test
+    public void utforBetaling_ikkeLoggetInn(){
+        int txID = 1;
+        Mockito.when(sjekk.loggetInn()).thenReturn(null);
+
+        // Act
+        List<Transaksjon> resultat = bankController.utforBetaling(txID);
+
+        // Assert
+        assertNull(resultat);
     }
 
 
