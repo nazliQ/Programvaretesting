@@ -255,7 +255,7 @@ public class EnhetstestBankController {
 
         //Assert
         assertEquals(transaksjoner, resultat);
-        assertEquals(1, resultat.size());
+        assertEquals(2, resultat.size());
         assertEquals(eksempel1, resultat.get(0));
         assertEquals(eksempel2, resultat.get(1));
 
