@@ -235,6 +235,7 @@ public class EnhetstestBankController {
         eksempel1.setTxID(101);
         eksempel1.setBelop(1000.0);
         eksempel1.setAvventer("1");
+        transaksjoner.add(eksempel1);
 
         Transaksjon eksempel2 = new Transaksjon();
         eksempel2.setDato("2024-12-01");
@@ -347,7 +348,7 @@ public class EnhetstestBankController {
         String resultat = bankController.endre(innKunde);
 
         //Assert
-        assertEquals(resultat,innKunde ,"OK");
+        assertEquals("OK", resultat);
 
     }
 
