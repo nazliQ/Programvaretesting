@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -332,15 +333,38 @@ public class EnhetstestBankController {
 
 
     @Test
-    public void endreKundeInfo(){
+    public void endreKundeInfo_loggetInn(){
         //Arrange
+        Kunde innKunde = new Kunde("12345678901",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
 
+
+        Mockito.when(sjekk.loggetInn()).thenReturn(innKunde.getPersonnummer());
+        Mockito.when(repository.endreKundeInfo(any(Kunde.class))).thenReturn("OK");
 
         //Act
-
+        String resultat = bankController.endre(innKunde);
 
         //Assert
+        assertEquals(resultat,innKunde ,"OK");
 
+    }
+
+    @Test
+    public void endreKundeInfo_ikkeLoggetInn(){
+        //Arrange
+        Kunde innKunde = new Kunde("12345678901",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
+
+        Mockito.when(sjekk.loggetInn()).thenReturn(null);
+
+        //Act
+        String resultat = bankController.endre(innKunde);
+
+        // Assert
+        assertNull(resultat);
     }
 
 }
