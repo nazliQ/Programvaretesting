@@ -66,4 +66,99 @@ public class EnhetstestAdminKundeController {
 		assertNull(resultat);
 	}
 
+	@Test
+	public void test_lagreKunde_loggetInn() {
+		//arrange
+		Kunde nyKunde = new Kunde("10203040506", "Karianne",
+				"Berg", "Krunglegata 189", "6512",
+				"Hamar", "12345678", "qwerty");
+
+		Mockito.when(sjekk.loggetInn()).thenReturn("10203040506");
+
+		Mockito.when(adminRepository.registrerKunde(nyKunde)).thenReturn("OK");
+
+		//act
+		String resultat = adminKundeController.lagreKunde(nyKunde);
+
+		//assert
+		assertEquals("OK", resultat);
+	}
+
+	@Test
+	public void test_lagreKunde_ikkeLoggetInn() {
+		//arrange
+		Kunde nyKunde = new Kunde("10203040506", "Karianne",
+				"Berg", "Krunglegata 189", "6512",
+				"Hamar", "12345678", "qwerty");
+
+		Mockito.when(sjekk.loggetInn()).thenReturn(null);
+
+		//act
+		String resultat = adminKundeController.lagreKunde(nyKunde);
+
+		//assert
+		assertNull(null);
+	}
+
+	@Test
+	public void test_endre_loggetInn() {
+		//arrange
+		Kunde nyKunde = new Kunde("10203040506", "Karianne",
+				"Berg", "Krunglegata 189", "6512",
+				"Hamar", "12345678", "qwerty");
+
+		Mockito.when(sjekk.loggetInn()).thenReturn("10203040506");
+
+		Mockito.when(adminKundeController.endre(nyKunde)).thenReturn("OK");
+
+		//act
+		String resultat = adminKundeController.endre(nyKunde);
+
+		//assert
+		assertEquals("OK", resultat);
+	}
+	@Test
+	public void test_endre_ikkeLoggetInn() {
+		//arrange
+		Kunde nyKunde = new Kunde("10203040506", "Karianne",
+				"Berg", "Krunglegata 189", "6512",
+				"Hamar", "12345678", "qwerty");
+
+		Mockito.when(sjekk.loggetInn()).thenReturn(null);
+
+		//act
+		String resultat = adminKundeController.endre(nyKunde);
+
+		//assert
+		assertNull(null);
+	}
+
+	@Test
+	public void test_slett_loggetInn() {
+		//arrange
+
+		Mockito.when(sjekk.loggetInn()).thenReturn("10203040506");
+
+		Mockito.when(adminKundeController.slett("10203040506")).thenReturn("OK");
+
+		//act
+		String resultat = adminKundeController.slett("10203040506");
+
+		//assert
+		assertEquals("OK", resultat);
+	}
+
+	@Test
+	public void test_slett_ikkeLoggetInn() {
+		//arrange
+
+		Mockito.when(sjekk.loggetInn()).thenReturn("10203040506");
+
+		//act
+		String resultat = adminKundeController.slett("10203040506");
+
+		//assert
+		assertNull(resultat);
+	}
+
 }
