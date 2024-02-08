@@ -59,7 +59,7 @@ public class EnhetstestSikkerhet{
     }
     @Test
     public void testLoggInnAdminValidInput() {
-        // Testiing av loggInnAdmin metoden med riktig input
+        // Testing av loggInnAdmin metoden med riktig input
         String result = sikkerhet.loggInnAdmin("Admin", "Admin");
 
         // Verifisering av resultat
