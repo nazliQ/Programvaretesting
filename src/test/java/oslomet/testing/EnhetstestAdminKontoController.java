@@ -128,7 +128,7 @@ public class EnhetstestAdminKontoController {
                 .thenReturn(1);
 
         // Testing av endreKonto methoden
-        Konto konto = new Konto(/* populate with required fields */);
+        Konto konto = new Konto();
         String resultat = adminRepository.endreKonto(konto);
 
         // Verifisering av resultat og interaksjoner med jdbcTemplate
@@ -143,7 +143,7 @@ public class EnhetstestAdminKontoController {
         when(jdbcTemplate.update(Mockito.anyString(), Optional.ofNullable(Mockito.any())))
                 .thenReturn(1);
 
-        // Testing av slettKontometoden
+        // Testing av slettKonto metoden
         String kontonummer = "12345";
         String resultat = adminRepository.slettKonto(kontonummer);
 
