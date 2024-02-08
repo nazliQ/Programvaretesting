@@ -30,10 +30,10 @@ public class EnhetstestAdminKontoController {
                 .thenReturn(Collections.emptyList());
 
         // Testing av hentAlleKunder metoden
-        List<Kunde> result = adminRepository.hentAlleKunder();
+        List<Kunde> resultat = adminRepository.hentAlleKunder();
 
         // Verifisering av resultat
-        assertEquals(Collections.emptyList(), result);
+        assertEquals(Collections.emptyList(), resultat);
     }
     public void testEndreKundeInfo() {
         // Mocking JdbcTemplate queryForObject metoden
@@ -47,11 +47,11 @@ public class EnhetstestAdminKontoController {
 
         // Testing av endreKundeInfo metoden
         Kunde kunde = new Kunde(/* populate with required fields */);
-        String result = adminRepository.endreKundeInfo(kunde);
+        String resultat = adminRepository.endreKundeInfo(kunde);
 
-        // Verifying the result
-        assertEquals("OK", result);
-        // Verifying interactions with the JdbcTemplate
+        // Verifisering av resultat
+        assertEquals("OK", resultat);
+        // Verifisering av interaksjoner med JdbcTemplate
         Mockito.verify((jdbcTemplate), Mockito.times(2)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
                 Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     }
@@ -68,11 +68,10 @@ public class EnhetstestAdminKontoController {
 
         // Testing av registrerKunde metoden
         Kunde kunde = new Kunde();
-        String result = adminRepository.registrerKunde(kunde);
+        String resultat = adminRepository.registrerKunde(kunde);
 
-        // Verifisering av resultat
-        assertEquals("OK", result);
-        // Verifisering av interactioner med JdbcTemplate
+        // Verifisering av resultat og interaksjoner med JdbcTemplate
+        assertEquals("OK", resultat);
         Mockito.verify(jdbcTemplate, Mockito.times(2)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
                 Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     }
@@ -85,11 +84,10 @@ public class EnhetstestAdminKontoController {
 
         // Testing av slettKunde metoden
         String personnummer = "12345678901";
-        String result = adminRepository.slettKunde(personnummer);
+        String resultat = adminRepository.slettKunde(personnummer);
 
-        // Verifisering av resultat
-        assertEquals("OK", result);
-        // Verifisering av interaksjon med JdbcTemplate
+        // Verifisering av resultat og interaksjoner med jdbcTemplate
+        assertEquals("OK", resultat);
         Mockito.verify(jdbcTemplate).update(Mockito.anyString(), Optional.ofNullable(Mockito.any()));
     }
 
@@ -106,11 +104,10 @@ public class EnhetstestAdminKontoController {
 
         // Testing av registrerKonto metoden
         Konto konto = new Konto();
-        String result = adminRepository.registrerKonto(konto);
+        String resultat = adminRepository.registrerKonto(konto);
 
-        // Verifisering av resultat
-        assertEquals("OK", result);
-        // Verifisering interaksjoner med JdbcTemplate
+        // Verifisering av resultat og interaksjoner med JdbcTemplate
+        assertEquals("OK", resultat);
         Mockito.verify(jdbcTemplate, Mockito.times(2)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
                 Mockito.any(), Mockito.any(), Mockito.any());
     }
@@ -132,11 +129,10 @@ public class EnhetstestAdminKontoController {
 
         // Testing av endreKonto methoden
         Konto konto = new Konto(/* populate with required fields */);
-        String result = adminRepository.endreKonto(konto);
+        String resultat = adminRepository.endreKonto(konto);
 
-        // Verifisering av resultat
-        assertEquals("OK", result);
-        // Verifisering av interaksjon med jdbcTemplate
+        // Verifisering av resultat og interaksjoner med jdbcTemplate
+        assertEquals("OK", resultat);
         Mockito.verify(jdbcTemplate, Mockito.times(3)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
                 Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     }
@@ -149,11 +145,10 @@ public class EnhetstestAdminKontoController {
 
         // Testing av slettKontometoden
         String kontonummer = "12345";
-        String result = adminRepository.slettKonto(kontonummer);
+        String resultat = adminRepository.slettKonto(kontonummer);
 
-        // Verifisering av resultat
-        assertEquals("OK", result);
-        // Verifisering av interaksjoner med jdbctemplate
+        // Verifisering av resultat og interaskjoner med jdbcTemplate
+        assertEquals("OK", resultat);
         Mockito.verify(jdbcTemplate).update(Mockito.anyString(), Optional.ofNullable(Mockito.any()));
     }
 
