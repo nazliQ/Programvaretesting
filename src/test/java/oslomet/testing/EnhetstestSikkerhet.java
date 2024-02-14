@@ -1,10 +1,10 @@
 package oslomet.testing;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import oslomet.testing.DAL.BankRepository;
 import oslomet.testing.Sikkerhet.Sikkerhet;
 import javax.servlet.http.HttpSession;
@@ -12,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+
+@ExtendWith(MockitoExtension.class)
 public class EnhetstestSikkerhet{
 
     @InjectMocks
@@ -30,9 +31,6 @@ public class EnhetstestSikkerhet{
         when(rep.sjekkLoggInn(anyString(), anyString())).thenReturn("OK");
 
         // Mocking av HttpSession
-        when(session.getAttribute("Innlogget")).thenReturn(null);
-
-        // Testing av sjekkLoggInn metoden
         String result = sikkerhet.sjekkLoggInn("12345987612", "validPassword");
 
         // Verifisering av resultat
