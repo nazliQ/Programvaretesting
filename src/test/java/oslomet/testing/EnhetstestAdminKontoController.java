@@ -80,7 +80,7 @@ public class EnhetstestAdminKontoController {
 
         // Verifisering av resultat og interaksjoner med JdbcTemplate
         assertEquals("OK", resultat);
-        Mockito.verify(jdbcTemplate, Mockito.times(2)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
+        Mockito.verify(jdbcTemplate, Mockito.times(1)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
                 Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     }
 
@@ -116,17 +116,13 @@ public class EnhetstestAdminKontoController {
 
         // Verifisering av resultat og interaksjoner med JdbcTemplate
         assertEquals("OK", resultat);
-        Mockito.verify(jdbcTemplate, Mockito.times(2)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
+        Mockito.verify(jdbcTemplate, Mockito.times(1)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
                 Mockito.any(), Mockito.any(), Mockito.any());
     }
 
     @Test
     public void testEndreKonto() {
-        // Mocking av JdbcTemplate queryForObject metoden for personnummer
-        when(jdbcTemplate.queryForObject(Mockito.anyString(), Mockito.eq(Integer.class), Mockito.any()))
-                .thenReturn(1);
-
-        // Mocking av JdbcTemplate queryForObject metoden for kontonummer
+        // Mocking av JdbcTemplate queryForObject metoden for personnummer og kontonummer
         when(jdbcTemplate.queryForObject(Mockito.anyString(), Mockito.eq(Integer.class), Mockito.any()))
                 .thenReturn(1);
 
@@ -141,7 +137,7 @@ public class EnhetstestAdminKontoController {
 
         // Verifisering av resultat og interaksjoner med jdbcTemplate
         assertEquals("OK", resultat);
-        Mockito.verify(jdbcTemplate, Mockito.times(3)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
+        Mockito.verify(jdbcTemplate, Mockito.times(1)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
                 Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     }
 
