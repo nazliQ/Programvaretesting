@@ -1,140 +1,140 @@
 package oslomet.testing;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import oslomet.testing.API.AdminKundeController;
+import oslomet.testing.API.AdminKontoController;
 import oslomet.testing.DAL.AdminRepository;
 import oslomet.testing.Models.Konto;
-import oslomet.testing.Models.Kunde;
-import java.util.Collections;
+import oslomet.testing.Sikkerhet.Sikkerhet;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnhetstestAdminKontoController {
+
     @InjectMocks
-    private AdminRepository adminRepository;
+    private AdminKontoController adminKontoController;
+
     @Mock
-    private JdbcTemplate jdbcTemplate;
+    private AdminRepository adminRepository;
 
-
-    @Test
-    public void testHentAlleKunder() {
-        // Mocking the JdbcTemplate query method
-        when(jdbcTemplate.query(Mockito.anyString(), Mockito.any(BeanPropertyRowMapper.class)))
-                .thenReturn(Collections.emptyList());
-
-        // Testing the hentAlleKunder method
-        List<Kunde> result = adminRepository.hentAlleKunder();
-
-        // Verifying the result
-        assertEquals(Collections.emptyList(), result);
+    @Mock
+    private Sikkerhet sjekk;
+    @Before
+    public void setup() {
+        AdminKontoController.repository = adminRepository;
+        AdminKontoController.sjekk = sjekk;
     }
 
     @Test
-    public void testRegistrerKunde() {
-        // Mocking the JdbcTemplate queryForObject method
-        when(jdbcTemplate.queryForObject(Mockito.anyString(), Mockito.eq(Integer.class), Mockito.any()))
-                .thenReturn(0);
-
-        // Mocking the JdbcTemplate update method
-        when(jdbcTemplate.update(Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any(),
-                Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-                .thenReturn(1);
-
-        // Testing the registrerKunde method
-        Kunde kunde = new Kunde(/* populate with required fields */);
-        String result = adminRepository.registrerKunde(kunde);
-
-        // Verifying the result
-        assertEquals("OK", result);
-        // Verifying interactions with the JdbcTemplate
-        Mockito.verify(jdbcTemplate, Mockito.times(1)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
-                Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-    }
-
-    @Test
-    public void testSlettKunde() {
-        // Mocking the JdbcTemplate update method
-        when(jdbcTemplate.update(Mockito.anyString(), Optional.ofNullable(Mockito.any())))
-                .thenReturn(1);
-
-        // Testing the slettKunde method
-        String personnummer = "12345678901";
-        String result = adminRepository.slettKunde(personnummer);
-
-        // Verifying the result
-        assertEquals("OK", result);
-        // Verifying interactions with the JdbcTemplate
-        Mockito.verify(jdbcTemplate).update(Mockito.anyString(), Optional.ofNullable(Mockito.any()));
-    }
-
-    @Test
-    public void testRegistrerKonto() {
-        // Mocking the JdbcTemplate queryForObject method
-        when(jdbcTemplate.queryForObject(Mockito.anyString(), Mockito.eq(Integer.class), Mockito.any()))
-                .thenReturn(1);
-
-        // Mocking the JdbcTemplate update method
-        when(jdbcTemplate.update(Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any(),
-                Mockito.any(), Mockito.any()))
-                .thenReturn(1);
-
-        // Testing the registrerKonto method
+    public void hentAlleKontiTest_Innlogget() {
+        // Arrange
+        List<Konto> kontoListe = new ArrayList<>();
         Konto konto = new Konto();
-        String result = adminRepository.registrerKonto(konto);
+        kontoListe.add(konto);
 
-        // Verifying the result
-        assertEquals("OK", result);
-        // Verifying interactions with the JdbcTemplate
-        Mockito.verify(jdbcTemplate, Mockito.times(1)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
-                Mockito.any(), Mockito.any(), Mockito.any());
+        Mockito.when(sjekk.loggetInn()).thenReturn("12345678910");
+        Mockito.when(adminRepository.hentAlleKonti()).thenReturn(kontoListe);
+
+        // Act
+        List<Konto> resultat = adminKontoController.hentAlleKonti();
+
+        // Assert
+        assertEquals(kontoListe, resultat);
     }
 
     @Test
-    public void testEndreKonto() {
-        // Mocking av JdbcTemplate queryForObject metoden for personnummer og kontonummer
-        when(jdbcTemplate.queryForObject(Mockito.anyString(), Mockito.eq(Integer.class), Mockito.any()))
-                .thenReturn(1);
+    public void hentAlleKontiTest_IkkeInnlogget() {
+        // Arrange
+        Mockito.when(sjekk.loggetInn()).thenReturn(null);
 
-        // Mocking av JdbcTemplate oppdateringsmetoden
-        when(jdbcTemplate.update(Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any(),
-                Mockito.any(), Mockito.any(), Mockito.any()))
-                .thenReturn(1);
+        // Act
+        List<Konto> resultat = adminKontoController.hentAlleKonti();
 
-        // Testing av endreKonto methoden
-        Konto konto = new Konto(/* populate with required fields */);
-        String result = adminRepository.endreKonto(konto);
-
-        // Verifisering av resultat
-        assertEquals("OK", result);
-        // Verifisering av interaksjon med jdbcTemplate
-        Mockito.verify(jdbcTemplate, Mockito.times(1)).update(Mockito.anyString(), Mockito.any(), Mockito.any(),
-                Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+        // Assert
+        assertNull(resultat);
     }
 
     @Test
-    public void testSlettKonto() {
-        // Mocking av dbcTemplate oppdateringsmetoden
-        when(jdbcTemplate.update(Mockito.anyString(), Optional.ofNullable(Mockito.any())))
-                .thenReturn(1);
+    public void registrerKontoTest_Innlogget() {
+        // Arrange
+        Konto konto = new Konto();
+        Mockito.when(sjekk.loggetInn()).thenReturn("12345678910");
+        Mockito.when(adminRepository.registrerKonto(any(Konto.class))).thenReturn("OK");
 
-        // Testing av slettKontometoden
-        String kontonummer = "12345";
-        String result = adminRepository.slettKonto(kontonummer);
+        // Act
+        String resultat = adminKontoController.registrerKonto(konto);
 
-        // Verifisering av resultat
-        assertEquals("OK", result);
-        // Verifisering av interaksjoner med jdbctemplate
-        Mockito.verify(jdbcTemplate).update(Mockito.anyString(), Optional.ofNullable(Mockito.any()));
+        // Assert
+        assertEquals("OK", resultat);
     }
 
+    @Test
+    public void registrerKontoTest_IkkeInnlogget() {
+        // Arrange
+        Konto konto = new Konto();
+        Mockito.when(sjekk.loggetInn()).thenReturn(null);
 
+        // Act
+        String resultat = adminKontoController.registrerKonto(konto);
+
+        // Assert
+        assertEquals("Ikke innlogget", resultat);
+    }
+
+    @Test
+    public void endreKontoTest_Innlogget() {
+        // Arrange
+        Konto konto = new Konto();
+        Mockito.when(sjekk.loggetInn()).thenReturn("12345678910");
+        Mockito.when(adminRepository.endreKonto(any(Konto.class))).thenReturn("OK");
+
+        // Act
+        String resultat = adminKontoController.endreKonto(konto);
+
+        // Assert
+        assertEquals("OK", resultat);
+    }
+
+    @Test
+    public void endreKontoTest_IkkeInnlogget() {
+        // Arrange
+        Konto konto = new Konto();
+        Mockito.when(sjekk.loggetInn()).thenReturn(null);
+
+        // Act
+        String resultat = adminKontoController.endreKonto(konto);
+
+        // Assert
+        assertEquals("Ikke innlogget", resultat);
+    }
+
+    @Test
+    public void slettKontoTest_Innlogget() {
+        // Arrange
+        Mockito.when(sjekk.loggetInn()).thenReturn("12345678910");
+        Mockito.when(adminRepository.slettKonto(any(String.class))).thenReturn("Konto slettet");
+
+        // Act
+        String resultat = AdminKontoController.slettKonto("1234567890123");
+
+        // Assert
+        assertEquals("Konto slettet", resultat);
+    }
+    @After
+    public void cleanup() {
+        AdminKontoController.repository = null;
+        AdminKontoController.sjekk = null;
+    }
 }
