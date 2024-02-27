@@ -13,7 +13,7 @@ public class Sikkerhet {
     BankRepository rep;
 
     @Autowired
-    private HttpSession session;
+    public HttpSession session;
 
     @GetMapping("/loggInn")
     public String sjekkLoggInn(String personnummer, String passord) {

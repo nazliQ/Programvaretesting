@@ -1,80 +1,138 @@
 package oslomet.testing;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.mock.web.MockHttpSession;
 import oslomet.testing.DAL.BankRepository;
 import oslomet.testing.Sikkerhet.Sikkerhet;
-import javax.servlet.http.HttpSession;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EnhetstestSikkerhet{
+public class EnhetstestSikkerhet {
 
     @InjectMocks
     private Sikkerhet sikkerhet;
 
     @Mock
-    private BankRepository rep;
+    private BankRepository bankRepository;
 
-    @Mock
-    private HttpSession session;
+    private MockHttpSession session;
 
-    @Test
-    public void testSjekkLoggInnValidInput() {
-        // Mocking av BankRepository metoden
-        when(rep.sjekkLoggInn(anyString(), anyString())).thenReturn("OK");
-
-        // Mocking av HttpSession
-        when(session.getAttribute("Innlogget")).thenReturn(null);
-
-        // Testing av sjekkLoggInn metoden
-        String result = sikkerhet.sjekkLoggInn("12345987612", "validPassword");
-
-        // Verifisering av resultat
-        assertEquals("OK", result);
-        Mockito.verify(session).setAttribute("Innlogget", "12345987612");
+    @Before
+    public void setUp() {
+        session = new MockHttpSession();
+        sikkerhet.session = session;
     }
 
     @Test
-    public void testSjekkLoggInnInvalidPersonnummer() {
-        // testing av sjekkLoggInn mot feil personnummer
-        String result = sikkerhet.sjekkLoggInn("invalidPersonnummer", "validPassword");
+    public void sjekkLoggInnTest() {
+        when(bankRepository.sjekkLoggInn("12345678901", "password")).thenReturn("OK");
 
-        // Verifisering av resultat
+        String result = sikkerhet.sjekkLoggInn("12345678901", "password");
+
+        assertEquals("OK", result);
+        assertEquals("12345678901", session.getAttribute("Innlogget"));
+    }
+
+    @Test
+    public void sjekkLoggInnFeilPersonnummerTest() {
+        String result = sikkerhet.sjekkLoggInn("1234567890", "password");
+
         assertEquals("Feil i personnummer", result);
     }
 
     @Test
-    public void testSjekkLoggInnInvalidPassord() {
-        // Testing av sjekkLoggInn metoden with feil passord
-        String result = sikkerhet.sjekkLoggInn("12345678901", "short");
+    public void sjekkLoggInnFeilPassordTest() {
+        String result = sikkerhet.sjekkLoggInn("12345678901", "pass");
 
-        // Verifisering av resultat
         assertEquals("Feil i passord", result);
     }
     @Test
-    public void testLoggInnAdminValidInput() {
-        // Testiing av loggInnAdmin metoden med riktig input
-        String result = sikkerhet.loggInnAdmin("Admin", "Admin");
+    public void sjekkLoggInnFeilInnloggingTest() {
+        when(bankRepository.sjekkLoggInn("12345678901", "wrongpassword")).thenReturn("Feil");
 
-        // Verifisering av resultat
-        assertEquals("Logget inn", result);
-        Mockito.verify(session).setAttribute("Innlogget", "Admin");
+        String result = sikkerhet.sjekkLoggInn("12345678901", "wrongpassword");
+
+        assertEquals("Feil i personnummer eller passord", result);
+        assertNull(session.getAttribute("Innlogget"));
     }
 
     @Test
-    public void testLoggInnAdminInvalidInput() {
-        // Testing av loggInnAdmin metoden med feil input
-        String result = sikkerhet.loggInnAdmin("Feilbrukernavn", "FeilPassord");
+    public void loggInnAdminFeilInnloggingTest() {
+        String result = sikkerhet.loggInnAdmin("WrongAdmin", "Admin");
 
-        // Verifisering av resultat
         assertEquals("Ikke logget inn", result);
-        Mockito.verify(session).setAttribute("Innlogget", null);
+        assertNull(session.getAttribute("Innlogget"));
+    }
+
+    @Test
+    public void loggUtTest() {
+        session.setAttribute("Innlogget", "12345678901");
+
+        sikkerhet.loggUt();
+
+        assertNull(session.getAttribute("Innlogget"));
+    }
+
+    @Test
+    public void loggInnAdminTest() {
+        String result = sikkerhet.loggInnAdmin("Admin", "Admin");
+
+        assertEquals("Logget inn", result);
+        assertEquals("Admin", session.getAttribute("Innlogget"));
+    }
+
+    @Test
+    public void loggInnAdminFeilBrukerTest() {
+        String result = sikkerhet.loggInnAdmin("admin", "Admin");
+
+        assertEquals("Ikke logget inn", result);
+    }
+
+    @Test
+    public void loggInnAdminFeilPassordTest() {
+        String result = sikkerhet.loggInnAdmin("Admin", "admin");
+
+        assertEquals("Ikke logget inn", result);
+    }
+
+    @Test
+    public void loggetInnTest() {
+        session.setAttribute("Innlogget", "12345678901");
+
+        String result = sikkerhet.loggetInn();
+
+        assertEquals("12345678901", result);
+    }
+    
+    @Test
+    public void sjekkLoggInnEmptyInputTest() {
+        String result = sikkerhet.sjekkLoggInn("", "");
+        assertEquals("Feil i personnummer", result);
+
+        result = sikkerhet.sjekkLoggInn("12345678901", "");
+        assertEquals("Feil i passord", result);
+
+        result = sikkerhet.sjekkLoggInn("", "password");
+        assertEquals("Feil i personnummer", result);
+    }
+
+
+    @Test
+    public void loggInnAdminEmptyInputTest() {
+        String result = sikkerhet.loggInnAdmin("", "");
+        assertEquals("Ikke logget inn", result);
+    }
+
+    @Test
+    public void loggetInnNotLoggedInTest() {
+        String result = sikkerhet.loggetInn();
+        assertNull(result);
     }
 }
-
