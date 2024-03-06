@@ -94,7 +94,7 @@ public class AdminRepository {
                     kunde.getAdresse(),kunde.getPostnr(),kunde.getTelefonnr(),kunde.getPassord());
         }
         catch(Exception e){
-            return "Feil";
+            return "Feil3";
         }
         return "OK";
     }
@@ -105,7 +105,7 @@ public class AdminRepository {
             db.update(sql,personnummer);
         }
         catch(Exception e){
-            return "Feil";
+            return "Feil4";
         }
         return "OK";
     }
@@ -115,14 +115,14 @@ public class AdminRepository {
             String sql = "Select count(*) from Kunde Where Personnummer = ?";
             int funnetPersonnummer  = db.queryForObject(sql,Integer.class,konto.getPersonnummer());
             if (funnetPersonnummer == 0){
-                return "Feil";
+                return "Feil5";
             }
             sql = "Insert into Konto (Personnummer, Kontonummer, Saldo, Type, Valuta) Values (?,?,?,?,?)";
             db.update(sql,konto.getPersonnummer(),konto.getKontonummer(),konto.getSaldo(),konto.getType(),
                     konto.getValuta());
         }
         catch(Exception e){
-            return "Feil";
+            return "Feil6";
         }
         return "OK";
     }
