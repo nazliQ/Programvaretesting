@@ -13,10 +13,10 @@ import java.util.List;
 @RequestMapping("/adminKonto")
 public class AdminKontoController {
     @Autowired
-    public static AdminRepository repository;
+    AdminRepository repository;
 
     @Autowired
-    public static Sikkerhet sjekk;
+    private Sikkerhet sjekk;
 
     @GetMapping("/hentAlle")
     public List<Konto> hentAlleKonti() {
@@ -28,7 +28,7 @@ public class AdminKontoController {
     }
 
     @PostMapping("/registrer")
-    public static String registrerKonto(@RequestBody Konto konto) {
+    public String registrerKonto(@RequestBody Konto konto) {
         String personnummer = sjekk.loggetInn();
         if (personnummer!=null) {
             String retur = repository.registrerKonto(konto);
@@ -47,7 +47,7 @@ public class AdminKontoController {
     }
 
     @GetMapping("/slett")
-    public static String slettKonto(String kontonummer) {
+    public String slettKonto(String kontonummer) {
         String personnummer = sjekk.loggetInn();
         if (personnummer!=null) {
            return repository.slettKonto(kontonummer);
